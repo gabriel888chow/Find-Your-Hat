@@ -73,6 +73,7 @@ class Field {
       
       playRole() {
         //start game - gaming status: started or not? true/false
+        
         // let statuGame = true;
         // while (statuGame === true) {
         //check location - what is the user input? what would be changed? 
