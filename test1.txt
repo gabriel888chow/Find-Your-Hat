@@ -1,31 +1,70 @@
 const prompt = require('prompt-sync')({sigint: true});
 
-const hat = '^';
-const hole = 'O';
-const fieldCharacter = '░';
-const pathCharacter = '*';
-let step = 0;
+// const hat = '^';
+// const hole = 'O';
+// const fieldCharacter = '░';
+// const pathCharacter = '*';
+// let step = 0;
+
+class Abc {
+  constructor() {
+    this.hat = '^';
+    this.hole = 'O';
+    this.fieldCharacter = '░';
+    this.pathCharacter = '*';
+    this.step = 0;
+  }
+  stepRun() {
+    this.step++;
+  }
+}
+
+class ResetGame {
+  constructor() {
+  }
+  
+  reset() {
+    // const Q = new Field();
+
+    // const location = new Field();
+    console.log(Field.generateField());
+    const q0 = prompt('Are you sure?');
+    if (q0 === "sure") {
+      //reset the gmae
+      Field.generateField();
+      true
+
+    } else {
+      Q.question();
+    }
+
+  }
+} 
 
 const field1 = [];
 // const field1 = [
-//     ['*', '░', 'O'], //y=0, x=0,1,2
-//     ['░', 'O', '░'], //y=1, x=0,1,2
-//     ['░', '░', '░'], //y=2, x=0,1,2
-//     ['O', '░', 'O'],
-//     ['░', '░', '░'],
-//     ['O', '░', '^'],
-//     ['░', 'O', '░']
-//   ];
-
+  //     ['*', '░', 'O'], //y=0, x=0,1,2
+  //     ['░', 'O', '░'], //y=1, x=0,1,2
+  //     ['░', '░', '░'], //y=2, x=0,1,2
+  //     ['O', '░', 'O'],
+  //     ['░', '░', '░'],
+  //     ['O', '░', '^'],
+  //     ['░', 'O', '░']
+  //   ];
+  
 class Field {
     constructor(fieldArray) {
+      this.ele = new Abc();
+      this.a = new ResetGame();
       this.field = fieldArray;
       this.y = 0; //直行
       this.x = 0; //横行
       this.statuGame = true;
-      this.current = [0][0];
-      // this.field[0][0] = start;
-      // this.startPoint = [0][0];
+      // this.inputHeight = 0;
+      // this.inputWidth;
+      // this.inputPercentage;
+
+
       // this.height;
       // this.width;
       // this.percentage;
@@ -33,6 +72,8 @@ class Field {
     
     runGame() {
       // let statuGame = true;
+      // this.a.reset();
+      // console.log("reset1?")
       while (this.statuGame === true) {
         this.print();
         this.question();
@@ -47,7 +88,7 @@ class Field {
     }
     
     question() {
-      const q1 = prompt('Plase enter your way(u, d, l, r)?');
+      const q1 = prompt('Plase enter your way(u, d, l, r)? Reset?');
       switch (q1) {
         case "u": 
           this.y -= 1; //or y--; or long code: (this.y = this.y -1;)
@@ -60,43 +101,42 @@ class Field {
           break;
         case "r":
           this.x += 1;
+          break;        
+        case "reset":
+          this.a.reset();
           break;
         default:
           console.log ("Your enter is wrong! Place try again!");
           this.question();
           break;
         }
-        step++;
-        console.log(`Current step is ${step}!`);
-        
+        this.ele.stepRun();
+        console.log(`Current step is ${this.ele.step}!`);
       }
       
       playRole() {
         //start game - gaming status: started or not? true/false
         // let statuGame = true;
         // while (statuGame === true) {
-        //check location - what is the user input? what would be changed? 
-        //what is the index of this.field now?
-        // console.log(`this.field[${this.y}][${this.x}]`);
-        //check if the game is over
-        //if input is out of the map
+          //check location - what is the user input? what would be changed? 
+          //what is the index of this.field now?
+          // console.log(`this.field[${this.y}][${this.x}]`);
+          //check if the game is over
+          //if input is out of the map
           if (this.y < 0 || this.x < 0 || this.y >= this.field.length || this.x >= this.field[this.y].length) {
             this.statuGame = false;
             console.log ("Your are lose!")
             //else if input is hat
-          } else if (this.field[this.y][this.x] === hat) {
+          } else if (this.field[this.y][this.x] === this.ele.hat) {
             this.statuGame = false;
-            console.log (`Your are win in ${step} steps!`)
-            //else input is hole
-          } else if (this.field[this.y][this.x] === hole) {
+            console.log (`Your are win in ${this.ele.step} steps!`)
+            //else input is ele.ele.hole
+          } else if (this.field[this.y][this.x] === this.ele.hole) {
             this.statuGame = false;
             console.log ("Your are lose!")
-
-          // } else if (this.field[this.y][this.x] === this.field[0][0]) {
-          //   Math.floor(Math.random * this.x);
           } else {
-            //put the "*" in the [this.y] [this.x]
-            this.field[this.y][this.x] = pathCharacter;
+            //update map
+            this.field[this.y][this.x] = this.ele.pathCharacter;
           }
         }
         
@@ -114,7 +154,12 @@ class Field {
        //output: print map
        
        static generateField(height, width, percentage) {
-         let testArr = [hole, fieldCharacter];
+        const inputHeight = height;
+        const inputWidth = width;
+        const inputPercentage = percentage;
+        const ele = new Abc();
+        //  console.log(ele.hat);
+         let testArr = [ele.hole, ele.fieldCharacter];
          let bigArray = [];
          // let findHat = hat;
          while (bigArray.length < height) {
@@ -127,7 +172,9 @@ class Field {
                smallArray.push(testArr[a]);
                //  console.log(sumFieldCharacter);
               }
-              let sumFieldCharacter = smallArray.filter(ele => ele === fieldCharacter);
+              //let 左個新的數值 把多過隨機的 fieldCharacter 放入去
+              let sumFieldCharacter = smallArray.filter(eles => eles === ele.fieldCharacter);
+              //console.log(sumFieldCharacter);
               if (sumFieldCharacter.length / width >= percentage) {
                 bigArray.push(smallArray);
               }
@@ -136,17 +183,13 @@ class Field {
               // console.log(testArr.length);
               // console.log(this.bigArray[0][0]);
             }
-            // if (startPoint(Math.floor(Math.random() * width)));
-            // bigArray[0][0] == startPoint;
-            
-            // bigArray[0][Math.floor(Math.random() * width)] = pathCharacter;
-            bigArray[0][0] = pathCharacter;
-            bigArray[height - 1][Math.floor(Math.random() * width)] = hat;
-            
+            bigArray[0][0] = ele.pathCharacter;
+            bigArray[height - 1][Math.floor(Math.random() * width)] = ele.hat;
             return bigArray;
           }
         }
   const myField = new Field(Field.generateField(5, 10, 0.7));
     // myField.runGame();
     // console.log(myField)
-  myField.runGame();
+    // Field.generateField(5, 10, 0.7);
+    myField.runGame();
